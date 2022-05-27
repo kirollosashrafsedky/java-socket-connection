@@ -59,6 +59,7 @@ public class ServerThread extends Thread{
     }
 
     public JSONObject handleRequest(JSONObject req){
+        ServerFunctionalities sf = new ServerFunctionalities();
         JSONObject res = new JSONObject();
         String dist = (String) req.get("@dist");
         switch (dist){
@@ -66,6 +67,7 @@ public class ServerThread extends Thread{
                 res.put("data", req.get("data"));
                 break;
             case "login":
+                res = sf.login(req);
                 break;
             // and so on...
         }

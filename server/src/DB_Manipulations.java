@@ -1,3 +1,4 @@
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 
 public class DB_Manipulations {
@@ -22,5 +23,33 @@ public class DB_Manipulations {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    public String compareUser(String user, String pass) {
+        String result = "";
+        String SQL = "SELECT user_name, pass "
+                + "FROM user";
+
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/marketplace", "root", "123456789");
+            Statement st = connection.createStatement();
+            ResultSet resultSet = st.executeQuery(SQL);
+
+            while(resultSet.next()){
+                String uname = resultSet.getString("user_name");
+                String password = resultSet.getString("pass");
+
+                if((user.equals(uname)) && (pass.equals(password))){
+                    result = "Granted";
+                    break;
+                }else{
+                    result = "Denied";
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return result;
     }
 }
