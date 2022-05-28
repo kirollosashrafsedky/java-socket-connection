@@ -1,18 +1,38 @@
 package sample;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import org.json.simple.JSONObject;
 
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+
 public class Controller {
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
     @FXML
-    private Button btnSend;
+    private TextField fname;
     @FXML
-    private Button btnLogin;
-
+    private TextField mname;
+    @FXML
+    private TextField lname;
+    @FXML
+    private TextField uname;
+    @FXML
+    private TextField pass;
+    @FXML
+    private TextField passv;
+    @FXML
+    private TextField blnc;
     @FXML
     private TextField textField;
     @FXML
@@ -52,4 +72,56 @@ public class Controller {
             textArea.appendText("Wrong credentials" + "\n");
         }
     }
+
+    @FXML
+    void btnCreateAcc_Handler(){
+
+        // sending json
+        SocketClient socketClient = SocketClient.getInstance();
+        JSONObject json = new JSONObject();
+        json.put("fname", fname.getText());
+        json.put("mname", mname.getText());
+        json.put("lname", lname.getText());
+        json.put("uname", uname.getText());
+        json.put("pass", pass.getText());
+        json.put("passv", passv.getText());
+        json.put("blnc", blnc.getText());
+        String dist = "sign-up";
+        JSONObject serverResponse = socketClient.socketSendReceiveJSON(json, dist);
+        if(serverResponse.get("create").equals("Ok")){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Info");
+            alert.setContentText("Your account is created successfully!");
+            alert.showAndWait();
+        }else if(serverResponse.get("create").equals("Choose Another")){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Info");
+            alert.setContentText("Username is already in use!");
+            alert.showAndWait();
+        }else{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Info");
+            alert.setContentText("Verification password does not match the entered one!");
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    void switchToSignUpPage(javafx.event.ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("signUpScene.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    void switchToLoginPage(javafx.event.ActionEvent event) throws IOException{
+        root = FXMLLoader.load(getClass().getResource("loginScene.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
 }
