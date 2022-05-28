@@ -69,6 +69,9 @@ public class ServerThread extends Thread{
             case "login":
                 res = sf.login(req);
                 break;
+            case "sign-up":
+                res = sf.signUp(req);
+                break;
             // and so on...
         }
         return res;

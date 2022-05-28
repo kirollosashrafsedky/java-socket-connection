@@ -2,27 +2,44 @@ import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 
 public class DB_Manipulations {
-    public void insertUser(User user) {
-        String SQL = "INSERT INTO user(user_id,fname,mname,lname,user_name,pass,balance) "
-                + "VALUES(?,?,?,?,?,?,?)";
+    public String insertUser(User user) {
+        String result = "Ok";
+        String SQL1 = "SELECT user_name "
+                + "FROM user";
+        String SQL2 = "INSERT INTO user(fname,mname,lname,user_name,pass,balance) "
+                + "VALUES(?,?,?,?,?,?)";
 
 
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/marketplace", "root", "123456789");
-             PreparedStatement pstmt = connection.prepareStatement(SQL)) {
+             PreparedStatement pstmt = connection.prepareStatement(SQL2)) {
 
-            pstmt.setInt(1, user.getUserId());
-            pstmt.setString(2, user.getFName());
-            pstmt.setString(3, user.getMName());
-            pstmt.setString(4, user.getLName());
-            pstmt.setString(5, user.getUserName());
-            pstmt.setString(6, user.getUserPass());
-            pstmt.setFloat(7, user.getBalance());
+            Statement st = connection.createStatement();
+            ResultSet resultSet = st.executeQuery(SQL1);
 
-            pstmt.executeUpdate();
+            while(resultSet.next()){
+                String uname = resultSet.getString("user_name");
+
+                if((uname.equals(user.getUserName()))){
+                    result = "Choose Another";
+                    break;
+                }
+            }
+
+            if(result.equals("Ok")){
+                pstmt.setString(1, user.getFName());
+                pstmt.setString(2, user.getMName());
+                pstmt.setString(3, user.getLName());
+                pstmt.setString(4, user.getUserName());
+                pstmt.setString(5, user.getUserPass());
+                pstmt.setFloat(6, user.getBalance());
+
+                pstmt.executeUpdate();
+            }
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+        return result;
     }
 
     public String compareUser(String user, String pass) {
