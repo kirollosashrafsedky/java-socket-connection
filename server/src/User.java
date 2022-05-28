@@ -1,5 +1,4 @@
 public class User {
-    private int userId;
     private String fName;
     private String mName;
     private String lName;
@@ -7,22 +6,13 @@ public class User {
     private String userPass;
     private float balance;
 
-    public User(int userId, String fName, String mName, String lName, String userName, String userPass, float balance){
-        this.userId = userId;
+    public User(String fName, String mName, String lName, String userName, String userPass, float balance){
         this.fName = fName;
         this.mName = mName;
         this.lName = lName;
         this.userName = userName;
         this.userPass = userPass;
         this.balance = balance;
-    }
-
-    public int getUserId(){
-        return userId;
-    }
-
-    public void setUserId(int userId){
-        this.userId = userId;
     }
 
     public String getFName(){
